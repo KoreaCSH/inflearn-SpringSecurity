@@ -1,11 +1,14 @@
 package io.security.basicsecurity;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -20,12 +23,16 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity // web 보안 활성화 애노테이션
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     // SpringBoot 2.7.x 는 SpringSecurity 5.7.x 버전이 추가되는데,
     // SpringSecurity 5.7.x 버전부터 WebSecurityConfigurerAdapter 가 deprecated 되어
     // 이제 WebSecurityConfigurerAdapter 를 상속받는 것이 아니라ㅏ
     // SecurityFilterChain 을 Bean 으로 등록해야 한다.
+
+    private final UserDetailsService userDetailsService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 인가
@@ -78,7 +85,14 @@ public class SecurityConfig {
                         response.sendRedirect("/login");
                     }
                 })
-                .deleteCookies("remember-be"); // 로그아웃 후 쿠키 삭제
+                .deleteCookies("remember") // 로그아웃 후 쿠키 삭제
+                // remember-me 구현
+                .and()
+                .rememberMe() // remember-me 기능 활성화
+                .rememberMeParameter("remember") // 기본 파라미터명은 remember-me
+                .tokenValiditySeconds(3600) // default 는 14일
+                .alwaysRemember(false) // remember-me 기능이 활성화되지 않아도 항상 실행할 것인가
+                .userDetailsService(userDetailsService); // 기능을 사용할 때 사용자 정보가 필요하므로 반드시 해당 설정이 필요하다.
 
         return http.build();
     }

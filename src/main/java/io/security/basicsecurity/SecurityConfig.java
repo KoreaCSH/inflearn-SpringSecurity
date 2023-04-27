@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class SecurityConfig {
 
     // SpringBoot 2.7.x 는 SpringSecurity 5.7.x 버전이 추가되는데,
     // SpringSecurity 5.7.x 버전부터 WebSecurityConfigurerAdapter 가 deprecated 되어
-    // 이제 WebSecurityConfigurerAdapter 를 상속받는 것이 아니라ㅏ
+    // 이제 WebSecurityConfigurerAdapter 를 상속받는 것이 아니라
     // SecurityFilterChain 을 Bean 으로 등록해야 한다.
 
     private final UserDetailsService userDetailsService;
@@ -94,8 +95,35 @@ public class SecurityConfig {
                 .alwaysRemember(false) // remember-me 기능이 활성화되지 않아도 항상 실행할 것인가
                 .userDetailsService(userDetailsService); // 기능을 사용할 때 사용자 정보가 필요하므로 반드시 해당 설정이 필요하다.
 
+        // 동시 세션 제어 - (1) 이전 사용자 세션 만료 / (2) 현재 사용자 인증 실패
+        //http
+        //        .sessionManagement(session -> session
+        //                    .maximumSessions(1) // 최대 허용 가능 세션 수, -1 이라면 무제한 세션 허용
+        //                    .maxSessionsPreventsLogin(true) // true - 현재 사용자 인증 실패 / false - 이전 사용자 세션 만료
+        //                    .expiredUrl("/expired") // 세션이 만료된 경우 이동할 페이지
+        //            );
+        http
+                .sessionManagement()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true);
+                //.expiredUrl();
+
+        // 동시 세션 제어와 세션 고정 보호를 따로 설정해야 하는 이유는?
+        // 세션 고정 보호 - sessionFixation().changeSessionId() 는 SpringSecurity 가 기본으로 설정해 준다.
+        // 공격자가 제공하는 JsessionID 를 사용하여 사용자가 로그인하는 것을 방지하기 위해
+        // changeSessionId 를 통해 JsessionID 를 변경하도록 설정한다.
+        http
+                .sessionManagement()
+                .sessionFixation().changeSessionId();
+                //.invalidSessionUrl();
+
         return http.build();
     }
+
+//    @Bean
+//    public HttpSessionEventPublisher httpSessionEventPublisher() {
+//        return new HttpSessionEventPublisher();
+//    }
 
 
 }

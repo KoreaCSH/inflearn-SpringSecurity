@@ -8,13 +8,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +28,6 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity // web 보안 활성화 애노테이션
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     // SpringBoot 2.7.x 는 SpringSecurity 5.7.x 버전이 추가되는데,
@@ -32,14 +35,42 @@ public class SecurityConfig {
     // 이제 WebSecurityConfigurerAdapter 를 상속받는 것이 아니라
     // SecurityFilterChain 을 Bean 으로 등록해야 한다.
 
-    private final UserDetailsService userDetailsService;
+    // In-memoryAuthentication
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.builder()
+                .username("user")
+                .password("{noop}1111")
+                .roles("USER")
+                .build();
+
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password("{noop}1111")
+                .roles("ADMIN", "USER")
+                .build();
+
+        UserDetails sys = User.builder()
+                .username("sys")
+                .password("{noop}1111")
+                .roles("SYS", "ADMIN", "USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin, sys);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // 인가
         http
-                .authorizeRequests()
-                .anyRequest().authenticated();
+                .authorizeRequests(authorize -> authorize
+                        .mvcMatchers("/user").hasRole("USER")
+                        .mvcMatchers("/admin/pay").hasRole("ADMIN")
+                        // 더 구체적인 경로를 넓은 경로보다 위에 작성해야 한다!
+                        .mvcMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
+                        .anyRequest().authenticated()
+                );
+
 
         // 인증 - 로그인
         http
@@ -92,8 +123,8 @@ public class SecurityConfig {
                 .rememberMe() // remember-me 기능 활성화
                 .rememberMeParameter("remember") // 기본 파라미터명은 remember-me
                 .tokenValiditySeconds(3600) // default 는 14일
-                .alwaysRemember(false) // remember-me 기능이 활성화되지 않아도 항상 실행할 것인가
-                .userDetailsService(userDetailsService); // 기능을 사용할 때 사용자 정보가 필요하므로 반드시 해당 설정이 필요하다.
+                .alwaysRemember(false); // remember-me 기능이 활성화되지 않아도 항상 실행할 것인가
+                //.userDetailsService(userDetailsService()); // 기능을 사용할 때 사용자 정보가 필요하므로 반드시 해당 설정이 필요하다.
 
         // 동시 세션 제어 - (1) 이전 사용자 세션 만료 / (2) 현재 사용자 인증 실패
         //http

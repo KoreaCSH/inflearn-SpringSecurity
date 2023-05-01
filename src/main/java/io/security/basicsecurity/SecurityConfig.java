@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -12,11 +13,16 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -64,6 +70,7 @@ public class SecurityConfig {
         // 인가
         http
                 .authorizeRequests(authorize -> authorize
+                        .mvcMatchers("/loginPage").permitAll()
                         .mvcMatchers("/user").hasRole("USER")
                         .mvcMatchers("/admin/pay").hasRole("ADMIN")
                         // 더 구체적인 경로를 넓은 경로보다 위에 작성해야 한다!
@@ -84,8 +91,13 @@ public class SecurityConfig {
                 .successHandler(new AuthenticationSuccessHandler() { // 로그인 성공 후 handler
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                        System.out.println("authentication " + authentication.getName());
-                        response.sendRedirect("/");
+                        RequestCache requestCache = new HttpSessionRequestCache();
+                        SavedRequest savedRequest = requestCache.getRequest(request, response);
+                        String redirectUrl = savedRequest.getRedirectUrl();
+                        response.sendRedirect(redirectUrl);
+
+                        // System.out.println("authentication " + authentication.getName());
+                        // response.sendRedirect("/");
                     }
                 })
                 .failureHandler(new AuthenticationFailureHandler() { // 로그인 실패 후 handler
@@ -147,6 +159,25 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionFixation().changeSessionId();
                 //.invalidSessionUrl();
+
+        // 예외 처리 및 요 캐시 필터
+        // authenticationEntryPoint - 인증 예외 처리
+        // -> 인증하지 않았을 때의 request 를 RequestCache 에 담아두고, 인증에 성공했을 때 successHandler 에서 RequestCache 에 담긴 request 를 바로 꺼낼 수 있도록 처리할 수 있다.
+        // accessDeniedHandler - 인가 예외 처리
+        http
+                .exceptionHandling()
+//                .authenticationEntryPoint(new AuthenticationEntryPoint() {
+//                    @Override
+//                    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+//                        response.sendRedirect("/login");
+//                    }
+//                })
+                .accessDeniedHandler(new AccessDeniedHandler() {
+                    @Override
+                    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                        response.sendRedirect("/denied");
+                    }
+                });
 
         return http.build();
     }

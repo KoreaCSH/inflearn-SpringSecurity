@@ -179,6 +179,10 @@ public class SecurityConfig {
                     }
                 });
 
+        // CSRF - 사이트 간 요청위조
+        // SpringSecurity 는 CSRF 를 토큰 방식으로 방어하고 있으며,
+        // http.csrf() 는 기본적으로 활성화되어 있다.
+
         return http.build();
     }
 

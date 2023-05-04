@@ -49,6 +49,7 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    // WebIgnore - css, image 파일 등은 필터를 거치지 않게 설정
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()));
@@ -59,7 +60,7 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests(authorize -> authorize
-                        .mvcMatchers("/").permitAll()
+                        .mvcMatchers("/", "/users").permitAll()
                         .mvcMatchers("/mypage").hasRole("USER")
                         .mvcMatchers("/messages").hasRole("MANAGER")
                         .mvcMatchers("/config").hasRole("ADMIN")

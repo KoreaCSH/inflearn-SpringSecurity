@@ -22,11 +22,11 @@ public class Account {
     private String username;
     private String password;
     private String email;
-    private String age;
+    private int age;
     private String role;
 
     @Builder
-    public Account(String username, String password, String email, String age, String role) {
+    public Account(String username, String password, String email, int age, String role) {
         this.username = username;
         this.password = password;
         this.email = email;

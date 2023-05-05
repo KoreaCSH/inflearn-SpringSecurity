@@ -1,5 +1,6 @@
 package com.core.springsecurity.io.core.security.security.configs;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,33 +17,39 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService() {
+    // 5.7.x 부터는 CustomUserDatailsService 를 Bean 으로 등록만 하면 되는 듯 하다.
+    private final UserDetailsService userDetailsService;
 
-        String password = passwordEncoder().encode("1111");
 
-        UserDetails user = User.builder()
-                .username("user")
-                .password(password)
-                .roles("USER")
-                .build();
 
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(password)
-                .roles("ADMIN")
-                .build();
-
-        UserDetails sys = User.builder()
-                .username("manager")
-                .password(password)
-                .roles("MANAGER")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin, sys);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//
+//        String password = passwordEncoder().encode("1111");
+//
+//        UserDetails user = User.builder()
+//                .username("user")
+//                .password(password)
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(password)
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails sys = User.builder()
+//                .username("manager")
+//                .password(password)
+//                .roles("MANAGER")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user, admin, sys);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,9 +1,11 @@
 package com.core.springsecurity.io.core.security.security.configs;
 
+import com.core.springsecurity.io.core.security.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -23,6 +25,11 @@ public class SecurityConfig {
     // 5.7.x 부터는 CustomUserDatailsService 를 Bean 으로 등록만 하면 되는 듯 하다.
     private final UserDetailsService userDetailsService;
 
+    // CustomAuthenticationProvider
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+    }
 
 
 //    @Bean

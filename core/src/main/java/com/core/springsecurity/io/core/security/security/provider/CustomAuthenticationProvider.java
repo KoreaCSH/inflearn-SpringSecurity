@@ -1,9 +1,11 @@
 package com.core.springsecurity.io.core.security.security.provider;
 
+import com.core.springsecurity.io.core.security.security.common.FormWebAuthenticationDetails;
 import com.core.springsecurity.io.core.security.security.service.AccountContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,6 +32,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // accountContext.getAccount().getPassword() 을 해야 한다.
         if (!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
             throw new BadCredentialsException("BadCredentialsException");
+        }
+
+        // WebAuthenticationDetails - 추가 정보 인증 로직 추가
+        FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails) authentication.getDetails();
+        String secretKey = formWebAuthenticationDetails.getSecretKey();
+
+        if(secretKey == null || !"secret".equals(secretKey)) {
+            throw new InsufficientAuthenticationException("insufficientAuthenticationException");
         }
 
         // token 을 만들어서 AuthenticationProvider 를 호출한 AuthenticationManager 에게 return 한다.

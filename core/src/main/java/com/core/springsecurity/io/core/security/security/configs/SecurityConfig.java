@@ -17,6 +17,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,7 @@ public class SecurityConfig {
     // 5.7.x 부터는 CustomUserDatailsService 를 Bean 으로 등록만 하면 되는 듯 하다.
     private final UserDetailsService userDetailsService;
     private final AuthenticationDetailsSource authenticationDetailsSource;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     // CustomAuthenticationProvider
     @Bean
@@ -88,6 +90,7 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(authenticationDetailsSource)
                 .defaultSuccessUrl("/")
+                .successHandler(authenticationSuccessHandler)
                 .permitAll();
 
         return http.build();

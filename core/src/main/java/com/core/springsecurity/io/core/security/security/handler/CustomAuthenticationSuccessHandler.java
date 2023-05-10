@@ -16,7 +16,6 @@ import java.io.IOException;
 
 // 인증 전의 요청을 처리하는 customSuccessHandler
 
-@Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();

@@ -1,4 +1,4 @@
-package com.core.springsecurity.io.core.security.security.handler;
+package com.core.springsecurity.io.core.security.security.handler.ajax;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

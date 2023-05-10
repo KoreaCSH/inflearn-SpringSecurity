@@ -1,4 +1,4 @@
-package com.core.springsecurity.io.core.security.security.handler;
+package com.core.springsecurity.io.core.security.security.handler.form;
 
 import lombok.Setter;
 import org.springframework.security.access.AccessDeniedException;

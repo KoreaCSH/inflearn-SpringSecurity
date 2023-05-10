@@ -1,4 +1,4 @@
-package com.core.springsecurity.io.core.security.security.handler;
+package com.core.springsecurity.io.core.security.security.handler.ajax;
 
 import com.core.springsecurity.io.core.security.domain.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,10 +1,10 @@
 //package com.core.springsecurity.io.core.security.security.configs;
 //
 //import com.core.springsecurity.io.core.security.security.filter.AjaxLoginProcessingFilter;
-//import com.core.springsecurity.io.core.security.security.handler.CustomAccessDeniedHandler;
-//import com.core.springsecurity.io.core.security.security.handler.CustomAuthenticationFailureHandler;
-//import com.core.springsecurity.io.core.security.security.handler.CustomAuthenticationSuccessHandler;
-//import com.core.springsecurity.io.core.security.security.provider.CustomAuthenticationProvider;
+//import com.core.springsecurity.io.core.security.security.handler.form.CustomAccessDeniedHandler;
+//import com.core.springsecurity.io.core.security.security.handler.form.CustomAuthenticationFailureHandler;
+//import com.core.springsecurity.io.core.security.security.handler.form.CustomAuthenticationSuccessHandler;
+//import com.core.springsecurity.io.core.security.security.provider.form.CustomAuthenticationProvider;
 //import lombok.RequiredArgsConstructor;
 //import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 //import org.springframework.context.annotation.Bean;

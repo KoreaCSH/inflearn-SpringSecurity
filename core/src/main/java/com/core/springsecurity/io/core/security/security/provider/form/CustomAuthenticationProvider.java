@@ -1,8 +1,7 @@
-package com.core.springsecurity.io.core.security.security.provider;
+package com.core.springsecurity.io.core.security.security.provider.form;
 
 import com.core.springsecurity.io.core.security.security.common.FormWebAuthenticationDetails;
 import com.core.springsecurity.io.core.security.security.service.AccountContext;
-import com.core.springsecurity.io.core.security.security.token.AjaxAuthenticationToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,13 +9,15 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
-public class AjaxAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -36,13 +37,25 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("BadCredentialsException");
         }
 
+        // WebAuthenticationDetails - 추가 정보 인증 로직 추가
+        FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails) authentication.getDetails();
+        String secretKey = formWebAuthenticationDetails.getSecretKey();
+
+        if(secretKey == null || !"secret".equals(secretKey)) {
+            throw new InsufficientAuthenticationException("insufficientAuthenticationException");
+        }
+
         // token 을 만들어서 AuthenticationProvider 를 호출한 AuthenticationManager 에게 return 한다.
-        return new AjaxAuthenticationToken(accountContext.getAccount(), null, accountContext.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                accountContext.getAccount(), null, accountContext.getAuthorities()
+        );
+
+        return authenticationToken;
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return AjaxAuthenticationToken.class.isAssignableFrom(authentication);
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
 }

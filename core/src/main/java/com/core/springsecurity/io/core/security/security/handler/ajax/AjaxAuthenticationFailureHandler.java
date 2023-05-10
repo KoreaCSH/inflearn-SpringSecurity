@@ -1,4 +1,4 @@
-package com.core.springsecurity.io.core.security.security.handler;
+package com.core.springsecurity.io.core.security.security.handler.ajax;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;

@@ -2,10 +2,10 @@ package com.core.springsecurity.io.core.security.security.configs;
 
 import com.core.springsecurity.io.core.security.security.common.AjaxLoginAuthenticationEntryPoint;
 import com.core.springsecurity.io.core.security.security.filter.AjaxLoginProcessingFilter;
-import com.core.springsecurity.io.core.security.security.handler.AjaxAccessDeniedHandler;
-import com.core.springsecurity.io.core.security.security.handler.AjaxAuthenticationFailureHandler;
-import com.core.springsecurity.io.core.security.security.handler.AjaxAuthenticationSuccessHandler;
-import com.core.springsecurity.io.core.security.security.provider.AjaxAuthenticationProvider;
+import com.core.springsecurity.io.core.security.security.handler.ajax.AjaxAccessDeniedHandler;
+import com.core.springsecurity.io.core.security.security.handler.ajax.AjaxAuthenticationFailureHandler;
+import com.core.springsecurity.io.core.security.security.handler.ajax.AjaxAuthenticationSuccessHandler;
+import com.core.springsecurity.io.core.security.security.provider.ajax.AjaxAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

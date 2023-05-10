@@ -1,4 +1,4 @@
-package com.core.springsecurity.io.core.security.security.handler;
+package com.core.springsecurity.io.core.security.security.handler.form;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;

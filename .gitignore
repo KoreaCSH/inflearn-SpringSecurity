@@ -37,3 +37,4 @@ out/
 .vscode/
 
 core/src/main/resources/application-db.yml
+jwt/src/main/resources/application-db.yml

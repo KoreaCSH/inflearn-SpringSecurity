@@ -84,15 +84,18 @@ public class AjaxSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .antMatcher("/api/**")
-                .authorizeRequests()
-                .antMatchers("/api/messages").hasRole("MANAGER")
-                .anyRequest().authenticated();
+                .authorizeRequests(authorize -> authorize
+                        .mvcMatchers("/", "/api/loginForm", "/login").permitAll()
+                        .mvcMatchers("/api/messages").hasRole("MANAGER")
+                        .anyRequest().authenticated());
+//                .antMatcher("/api/**")
+//                .authorizeRequests()
+//                .antMatchers("/api/messages").hasRole("MANAGER")
+//                .anyRequest().authenticated();
 
         http
                 .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable()
-                .formLogin().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint())
                 .accessDeniedHandler(accessDeniedHandler());

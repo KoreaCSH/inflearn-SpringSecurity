@@ -2,6 +2,7 @@ package io.springsecurity.jwt.service;
 
 import io.springsecurity.jwt.domain.User;
 import io.springsecurity.jwt.domain.dto.UserJoinRequest;
+import io.springsecurity.jwt.domain.dto.UserLoginRequest;
 import io.springsecurity.jwt.exception.AppException;
 import io.springsecurity.jwt.exception.ErrorCode;
 import io.springsecurity.jwt.repository.UserRepository;
@@ -32,6 +33,19 @@ public class UserService {
         userRepository.save(user);
 
         return "success";
+    }
+
+    @Transactional
+    public String login(UserLoginRequest request) {
+
+        User findUser = userRepository.findByUserName(request.getUserName())
+                .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOTFOUND, request.getUserName() + "가 없습니다"));
+
+        if (!encoder.matches(request.getPassword(), findUser.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_PASSWORD, "패스워드를 잘못 입력 했습니다.");
+        }
+
+        return "token";
     }
 
 }

@@ -1,12 +1,12 @@
 package io.springsecurity.jwt.service;
 
-import io.springsecurity.jwt.domain.User;
+import io.springsecurity.jwt.domain.Account;
 import io.springsecurity.jwt.domain.dto.UserJoinRequest;
 import io.springsecurity.jwt.domain.dto.UserLoginRequest;
 import io.springsecurity.jwt.exception.AppException;
 import io.springsecurity.jwt.exception.ErrorCode;
 import io.springsecurity.jwt.repository.UserRepository;
-import io.springsecurity.jwt.utils.JwtTokenUtils;
+import io.springsecurity.jwt.utils.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
-    private final JwtTokenUtils jwtTokenUtils;
+    private final JwtProvider jwtTokenUtils;
 
     @Transactional
     public String join(UserJoinRequest request) {
@@ -31,7 +31,7 @@ public class UserService {
         );
 
         String password = encoder.encode(request.getPassword());
-        User user = request.toEntity(password);
+        Account user = request.toEntity(password);
         userRepository.save(user);
 
         return "success";
@@ -40,7 +40,7 @@ public class UserService {
     @Transactional
     public String login(UserLoginRequest request) {
 
-        User findUser = userRepository.findByUserName(request.getUserName())
+        Account findUser = userRepository.findByUserName(request.getUserName())
                 .orElseThrow(() -> new AppException(ErrorCode.USERNAME_NOTFOUND, request.getUserName() + "가 없습니다"));
 
         if (!encoder.matches(request.getPassword(), findUser.getPassword())) {

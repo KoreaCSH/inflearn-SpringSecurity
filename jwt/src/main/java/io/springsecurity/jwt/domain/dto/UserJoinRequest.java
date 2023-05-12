@@ -1,6 +1,6 @@
 package io.springsecurity.jwt.domain.dto;
 
-import io.springsecurity.jwt.domain.User;
+import io.springsecurity.jwt.domain.Account;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +12,13 @@ public class UserJoinRequest {
 
     private String userName;
     private String password;
+    private String role;
 
-    public User toEntity(String password) {
-        return User.builder()
+    public Account toEntity(String password) {
+        return Account.builder()
                 .userName(userName)
                 .password(password)
+                .role(role)
                 .build();
     }
-
 }

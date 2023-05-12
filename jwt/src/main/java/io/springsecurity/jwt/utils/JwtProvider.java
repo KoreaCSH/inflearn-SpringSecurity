@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -12,7 +13,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtTokenUtils {
+public class JwtProvider {
 
     @Value("${jwt.token.secret}")
     private String secretKey;
@@ -36,4 +37,13 @@ public class JwtTokenUtils {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
+    public boolean validateToken(String jwt) {
+
+        return false;
+    }
+
+    public Authentication getAuthentication(String jwt) {
+
+        return null;
+    }
 }

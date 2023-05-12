@@ -1,12 +1,12 @@
 package io.springsecurity.jwt.repository;
 
-import io.springsecurity.jwt.domain.User;
+import io.springsecurity.jwt.domain.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<Account, Long> {
 
-    Optional<User> findByUserName(String userName);
+    Optional<Account> findByUserName(String userName);
 
 }

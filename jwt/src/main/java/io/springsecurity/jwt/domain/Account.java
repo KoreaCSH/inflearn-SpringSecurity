@@ -10,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class User {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,11 +18,13 @@ public class User {
 
     private String userName;
     private String password;
+    private String role;
 
     @Builder
-    public User(String userName, String password) {
+    public Account(String userName, String password, String role) {
         this.userName = userName;
         this.password = password;
+        this.role = role;
     }
 
 }

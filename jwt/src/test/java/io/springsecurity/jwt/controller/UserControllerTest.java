@@ -60,7 +60,7 @@ class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         // http 에 값을 보낼 땐 Byte 로 보낸다.
-                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password))))
+                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password, "ROLE_USER"))))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -79,7 +79,7 @@ class UserControllerTest {
         mockMvc.perform(post("/api/v1/users/join")
                         .contentType(MediaType.APPLICATION_JSON)
                         // http 에 값을 보낼 땐 Byte 로 보낸다.
-                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password))))
+                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password, "ROLE_USER"))))
                 .andDo(print())
                 .andExpect(status().isConflict());
 
@@ -121,7 +121,7 @@ class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         // http 에 값을 보낼 땐 Byte 로 보낸다.
-                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password))))
+                        .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userName, password))))
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
@@ -142,7 +142,7 @@ class UserControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         // http 에 값을 보낼 땐 Byte 로 보낸다.
-                        .content(objectMapper.writeValueAsBytes(new UserJoinRequest(userName, password))))
+                        .content(objectMapper.writeValueAsBytes(new UserLoginRequest(userName, password))))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
 

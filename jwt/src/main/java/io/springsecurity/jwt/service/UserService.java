@@ -6,6 +6,7 @@ import io.springsecurity.jwt.domain.dto.UserLoginRequest;
 import io.springsecurity.jwt.exception.AppException;
 import io.springsecurity.jwt.exception.ErrorCode;
 import io.springsecurity.jwt.repository.UserRepository;
+import io.springsecurity.jwt.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
+    private final JwtTokenUtils jwtTokenUtils;
 
     @Transactional
     public String join(UserJoinRequest request) {
@@ -45,7 +47,9 @@ public class UserService {
             throw new AppException(ErrorCode.INVALID_PASSWORD, "패스워드를 잘못 입력 했습니다.");
         }
 
-        return "token";
+        String token = jwtTokenUtils.createToken(findUser.getUserName());
+
+        return token;
     }
 
 }

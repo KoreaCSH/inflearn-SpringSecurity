@@ -33,6 +33,5 @@ public class JwtAuthenticationFailureHandler implements AuthenticationFailureHan
         }
 
         objectMapper.writeValue(response.getWriter(), errorMessage);
-
     }
 }

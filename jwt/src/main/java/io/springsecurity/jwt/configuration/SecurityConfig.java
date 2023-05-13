@@ -1,9 +1,7 @@
 package io.springsecurity.jwt.configuration;
 
-import io.springsecurity.jwt.JwtAuthenticationFailureHandler;
-import io.springsecurity.jwt.JwtAuthenticationFilter;
-import io.springsecurity.jwt.JwtAuthenticationSuccessHandler;
-import io.springsecurity.jwt.JwtAuthenticationProvider;
+import io.springsecurity.jwt.*;
+import io.springsecurity.jwt.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtProvider jwtProvider;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -45,12 +45,12 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        return new JwtAuthenticationProvider(userDetailsService, passwordEncoder());
+        return new JwtAuthenticationProvider(userDetailsService, passwordEncoder);
     }
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new JwtAuthenticationSuccessHandler();
+        return new JwtAuthenticationSuccessHandler(jwtProvider);
     }
 
     @Bean
@@ -59,9 +59,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public JwtFilter jwtFilter() {
+        return new JwtFilter(jwtProvider);
     }
+
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -77,6 +79,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt 사용 시 설정
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

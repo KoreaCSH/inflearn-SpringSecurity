@@ -21,7 +21,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String userName = authentication.getName();
+        String userName = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
         UserContext userContext = (UserContext) userDetailsService.loadUserByUsername(userName);
@@ -30,7 +30,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("BadCredentialException");
         }
 
-        return new UsernamePasswordAuthenticationToken(userContext.getAccount(), null, userContext.getAuthorities());
+        // userContext.getAccount().getUserName() 로 넘거야 정상적으로 동작했다.
+        return new UsernamePasswordAuthenticationToken(userContext.getAccount().getUserName(), null, userContext.getAuthorities());
     }
 
     @Override

@@ -24,10 +24,10 @@ public class UserController {
         return ResponseEntity.ok().body("회원가입 성공");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginRequest dto) {
-        String token = userService.login(dto);
-        return ResponseEntity.ok().body(token);
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<String> login(@RequestBody UserLoginRequest dto) {
+//        String token = userService.login(dto);
+//        return ResponseEntity.ok().body(token);
+//    }
 
 }

@@ -1,10 +1,9 @@
 package io.springsecurity.jwt.filter;
 
-import io.springsecurity.jwt.utils.JwtProvider;
+import io.springsecurity.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 

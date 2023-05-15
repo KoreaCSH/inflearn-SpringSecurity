@@ -10,7 +10,7 @@ import java.util.Collection;
 @Getter
 public class UserContext extends User {
 
-    private final Account account;
+    private Account account;
 
     public UserContext(Account account, Collection<? extends GrantedAuthority> authorities) {
         super(account.getUserName(), account.getPassword(), authorities);

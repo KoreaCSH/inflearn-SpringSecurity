@@ -28,17 +28,17 @@ public class JwtProvider {
 
 
     // AccessToken 발급
-    public String createToken(Authentication authentication) {
+    public String createToken(String userName) {
 
         Claims claims = Jwts.claims(); // 일종의 map
-        claims.put("roles", authentication.getAuthorities());
+        claims.put("roles", "ROLE_USER");
         claims.setIssuedAt(new Date(System.currentTimeMillis()));
         claims.setExpiration(new Date(System.currentTimeMillis() + expireTimeNs));
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)
-                .setSubject(authentication.getName())
+                .setSubject(userName)
                 .signWith(stringToKey(secretKey), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -74,6 +74,6 @@ public class JwtProvider {
 
         UserContext userContext = (UserContext) userDetailsService.loadUserByUsername(userName);
 
-        return new UsernamePasswordAuthenticationToken(userContext.getAccount().getUserName(), null, userContext.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userContext.getAccount(), null, userContext.getAuthorities());
     }
 }

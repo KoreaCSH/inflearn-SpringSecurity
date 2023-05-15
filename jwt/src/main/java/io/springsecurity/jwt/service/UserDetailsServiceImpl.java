@@ -22,13 +22,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Account user = userRepository.findByUserName(username)
+        Account account = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("UsernameNotFountException"));
 
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(user.getRole()));
+        roles.add(new SimpleGrantedAuthority(account.getRole()));
 
-        UserContext userContext = new UserContext(user, roles);
+        UserContext userContext = new UserContext(account, roles);
 
         return userContext;
     }

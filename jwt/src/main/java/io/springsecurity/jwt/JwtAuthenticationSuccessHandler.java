@@ -31,8 +31,10 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         // 전달받은 인증 정보 SecurityContextHolder 에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        Account account = (Account)authentication.getPrincipal();
+
         // JWT 발급
-        final String token = jwtProvider.createToken(authentication);
+        final String token = jwtProvider.createToken(account.getUserName());
         response.addHeader("Authorization", "Bearer " + token);
     }
 }

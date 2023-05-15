@@ -1,6 +1,7 @@
 package io.springsecurity.jwt.filter;
 
 import io.springsecurity.jwt.JwtProvider;
+import io.springsecurity.jwt.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -2,6 +2,7 @@ package io.springsecurity.jwt.configuration;
 
 import io.springsecurity.jwt.*;
 import io.springsecurity.jwt.filter.JwtFilter;
+import io.springsecurity.jwt.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 

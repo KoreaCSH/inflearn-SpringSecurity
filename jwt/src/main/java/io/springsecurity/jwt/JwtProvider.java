@@ -74,6 +74,6 @@ public class JwtProvider {
 
         UserContext userContext = (UserContext) userDetailsService.loadUserByUsername(userName);
 
-        return new UsernamePasswordAuthenticationToken(userContext.getAccount(), null, userContext.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
     }
 }

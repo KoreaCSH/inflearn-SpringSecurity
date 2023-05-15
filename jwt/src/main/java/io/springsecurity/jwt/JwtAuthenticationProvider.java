@@ -31,7 +31,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
 
         // userContext.getAccount().getUserName() 로 넘거야 정상적으로 동작했다.
-        return new UsernamePasswordAuthenticationToken(userContext.getAccount(), null, userContext.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userContext, null, userContext.getAuthorities());
     }
 
     @Override

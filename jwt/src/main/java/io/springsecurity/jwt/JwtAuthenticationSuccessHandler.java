@@ -2,6 +2,7 @@ package io.springsecurity.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.springsecurity.jwt.domain.Account;
+import io.springsecurity.jwt.service.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,10 +32,10 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         // 전달받은 인증 정보 SecurityContextHolder 에 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Account account = (Account)authentication.getPrincipal();
+        UserContext userContext = (UserContext) authentication.getPrincipal();
 
         // JWT 발급
-        final String token = jwtProvider.createToken(account.getUserName());
+        final String token = jwtProvider.createToken(userContext.getAccount().getUserName());
         response.addHeader("Authorization", "Bearer " + token);
     }
 }
